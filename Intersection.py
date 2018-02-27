@@ -1,5 +1,34 @@
+from flask import Flask, request, jsonify
 from threading import Thread
 import time
+
+GlobalIntersections = []
+
+app = Flask(__name__)
+
+@app.route("/", methods=['GET'])
+@app.route("/index")
+def getIntersections():
+    html = '<h3>List of {x} Intersections</h3>'
+    if len(GlobalIntersections) == 0:
+        html += '<p>No Intersections</p>'
+    else:
+        idx = 0
+        for signal in GlobalIntersections:
+            html += '<p>id- '
+            html += idx.__str__()
+            html += '. '
+            html += signal.getStatus().__str__()
+            html += '</p>'
+            idx += 1
+  
+    return html.format(x=len(GlobalIntersections))
+
+@app.route("/", methods=['POST'])
+def createIntersection():
+    GlobalIntersections.append(Intersection())
+    data = "{ 'id': "+(len(GlobalIntersections)-1).__str__()+"}"
+    return jsonify(data)
 
 class Intersection:
     GREENTIME = 27  # green runs for 27 seconds
@@ -36,9 +65,10 @@ class Intersection:
                     # there is no else. this direction is done.
     
     def getStatus(self):
-            print("For signal at intersection: ",self,": Direction is ",self.curActive," Light is ",self.LightSet[self.curActive]['activeLight'])
+            return "For signal at intersection ",self," Direction is ",self.curActive," Light is ",self.lightSet[self.curActive]['activeLight']
                     
 if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=8010)
     print("starting main\n")
     s = Intersection()
     
