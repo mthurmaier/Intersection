@@ -69,7 +69,7 @@ class Intersection:
                     
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8010)
-    print("starting main\n")
-    s = Intersection()
+    # print("starting main\n")
+    # s = Intersection()
     
     
